@@ -1,0 +1,4 @@
+name: MCAuth-Server
+main: org.inventivetalent.mcauth.MCAuthServer
+version: 1.0.0
+author: inventivetalent

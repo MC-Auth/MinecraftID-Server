@@ -1,7 +1,10 @@
 package org.inventivetalent.mcauth;
 
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -101,6 +104,38 @@ public class MCAuthServer extends Plugin implements Listener {
 			event.setCancelReason("§aYour account has been authenticated.\n"
 					+ "§aPlease enter this code on the website: §b" + request.getToken());
 			event.setCancelled(true);
+			event.completeIntent(this);
+		});
+	}
+
+	@EventHandler
+	public void onPing(ProxyPingEvent event) {
+		String ip = event.getConnection().getAddress().getAddress().getHostAddress();
+
+		event.registerIntent(this);
+		getProxy().getScheduler().runAsync(this, () -> {
+			Request request = requestsCollection.findOne("{request_ip: #, status: #}", ip, Status.REQUESTED).as(Request.class);
+
+			if (request != null) {
+				if (System.currentTimeMillis() - (request.getCreated().getTime()) < 5 * 60 * 1000) {
+					event.setResponse(new ServerPing(
+							new ServerPing.Protocol("MCAuth", event.getConnection().getVersion()),
+							new ServerPing.Players(0, 0, new ServerPing.PlayerInfo[0]),
+							new TextComponent("§8MCAuth Server - §7mcauth.ga\n"
+									+ "§aJoin now to verify your account!"),
+							getProxy().getConfig().getFaviconObject()
+					));
+					event.completeIntent(this);
+					return;
+				}
+			}
+			event.setResponse(new ServerPing(
+					new ServerPing.Protocol("MCAuth", event.getConnection().getVersion()),
+					new ServerPing.Players(0, 0, new ServerPing.PlayerInfo[0]),
+					new TextComponent("§8MCAuth Server - §7mcauth.ga\n"
+							+ "§6There is no request to verify your account"),
+					getProxy().getConfig().getFaviconObject()
+			));
 			event.completeIntent(this);
 		});
 	}

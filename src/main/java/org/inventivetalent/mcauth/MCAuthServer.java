@@ -120,7 +120,7 @@ public class MCAuthServer extends Plugin implements Listener {
 				if (System.currentTimeMillis() - (request.getCreated().getTime()) < 5 * 60 * 1000) {
 					event.setResponse(new ServerPing(
 							new ServerPing.Protocol("MCAuth", event.getConnection().getVersion()),
-							new ServerPing.Players(0, 0, new ServerPing.PlayerInfo[0]),
+							new ServerPing.Players(1, 0, new ServerPing.PlayerInfo[0]),
 							new TextComponent("§8MCAuth Server - §7mcauth.ga\n"
 									+ "§aJoin now to verify your account!"),
 							getProxy().getConfig().getFaviconObject()

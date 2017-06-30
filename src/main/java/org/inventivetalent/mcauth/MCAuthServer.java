@@ -72,7 +72,7 @@ public class MCAuthServer extends Plugin implements Listener {
 
 		event.registerIntent(this);
 		getProxy().getScheduler().runAsync(this, () -> {
-			Request request = requestsCollection.findOne("{username: #, request_ip: #, status: #}", event.getConnection().getName(), ip, Status.REQUESTED).as(Request.class);
+			Request request = requestsCollection.findOne("{username: #, status: #}", event.getConnection().getName(), Status.REQUESTED).as(Request.class);
 
 			if (request == null) {
 				event.setCancelReason("§cThere is no authentication request for your username");

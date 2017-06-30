@@ -11,6 +11,7 @@ public class Request {
 	String request_id;
 	String request_ip;
 	String username;
+	String uuid;
 	Status status;
 	String token;
 	long   tokenTime;

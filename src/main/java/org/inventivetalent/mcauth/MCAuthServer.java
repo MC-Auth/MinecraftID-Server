@@ -97,7 +97,7 @@ public class MCAuthServer extends Plugin implements Listener {
 			request.setToken(generateToken(6));
 			request.setTokenTime(System.currentTimeMillis());
 			request.setStatus(Status.TOKEN_GENERATED);
-			request.setUuid(event.getConnection().getUniqueId().toString());
+			request.setUuid(event.getConnection().getUniqueId().toString().replaceAll("-", ""));
 
 			requestsCollection.update("{_id: #}", request.get_id()).upsert().with(request);
 

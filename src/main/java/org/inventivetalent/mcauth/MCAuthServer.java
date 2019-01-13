@@ -122,7 +122,7 @@ public class MCAuthServer extends Plugin implements Listener {
 					event.setResponse(new ServerPing(
 							new ServerPing.Protocol("MCAuth", event.getConnection().getVersion()),
 							new ServerPing.Players(1, 0, new ServerPing.PlayerInfo[0]),
-							new TextComponent("§8MCAuth Server - §7mcauth.ga\n"
+							new TextComponent("§8MCAuth Server - §7mcauth.org\n"
 									+ "§aJoin now to verify your account!"),
 							getProxy().getConfig().getFaviconObject()
 					));
@@ -133,7 +133,7 @@ public class MCAuthServer extends Plugin implements Listener {
 			event.setResponse(new ServerPing(
 					new ServerPing.Protocol("MCAuth", event.getConnection().getVersion()),
 					new ServerPing.Players(0, 0, new ServerPing.PlayerInfo[0]),
-					new TextComponent("§8MCAuth Server - §7mcauth.ga\n"
+					new TextComponent("§8MCAuth Server - §7mcauth.org\n"
 							+ "§6There is no request to verify your account"),
 					getProxy().getConfig().getFaviconObject()
 			));

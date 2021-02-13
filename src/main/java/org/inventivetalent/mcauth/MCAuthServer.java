@@ -1,5 +1,6 @@
 package org.inventivetalent.mcauth;
 
+import com.mongodb.ServerAddress;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -20,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MCAuthServer extends Plugin implements Listener {
@@ -52,12 +55,21 @@ public class MCAuthServer extends Plugin implements Listener {
 			throw new RuntimeException("Failed to load config", e);
 		}
 
-		databaseClient = new DatabaseClient(config.getString("mongodb.database"), config.getString("mongodb.host"), config.getInt("mongodb.port"), config.getString("mongodb.login.user"), config.getString("mongodb.login.pass").toCharArray(), config.getString("mongodb.login.db"));
+		if (config.contains("mongodb.hosts")) {
+			List<ServerAddress> hosts = new ArrayList<>();
+			for (String s : config.getStringList("mongodb.hosts")) {
+				String[] split = s.split(":");
+				hosts.add(new ServerAddress(split[0], split.length > 1 ? Integer.parseInt(split[1]) : ServerAddress.defaultPort()));
+			}
+			databaseClient = new DatabaseClient(config.getString("mongodb.database"), hosts, config.getString("mongodb.login.user"), config.getString("mongodb.login.pass").toCharArray(), config.getString("mongodb.login.db"));
+		} else {
+			databaseClient = new DatabaseClient(config.getString("mongodb.database"), config.getString("mongodb.host"), config.getInt("mongodb.port"), config.getString("mongodb.login.user"), config.getString("mongodb.login.pass").toCharArray(), config.getString("mongodb.login.db"));
+		}
 		try {
 			databaseClient.connect(10000);
 			databaseClient.collectionCount();
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to connect to databse", e);
+			throw new RuntimeException("Failed to connect to database", e);
 		}
 
 		jongo = databaseClient.jongo();
